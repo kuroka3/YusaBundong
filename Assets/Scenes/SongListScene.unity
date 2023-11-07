@@ -284,8 +284,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Artist
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 5bdb88282d4c71c4688bc7dcfc166114, type: 2}
-  m_sharedMaterial: {fileID: 3590037037637581457, guid: 5bdb88282d4c71c4688bc7dcfc166114, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f3674f2884e823946801dbfdc8ecbb48, type: 2}
+  m_sharedMaterial: {fileID: 3426190345783194053, guid: f3674f2884e823946801dbfdc8ecbb48, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -815,18 +815,6 @@ MonoBehaviour:
   nameT: {fileID: 1786443298}
   jacket: {fileID: 1152075657}
   artist: {fileID: 430550453}
-  jackets:
-  - {fileID: 21300000, guid: 4400e615961695c46b675992c011f682, type: 3}
-  - {fileID: 21300000, guid: 2f35933b4cf284b408184cf2f1d91224, type: 3}
-  - {fileID: 21300000, guid: 3b77ac4d08dc55d4c87f9dc4fecf586c, type: 3}
-  names:
-  - Into The Night
-  - UNITY
-  - Failure Girl
-  artists:
-  - YOASOBI
-  - TheFatRat
-  - Kairiki Bear
 --- !u!1 &935896527
 GameObject:
   m_ObjectHideFlags: 0
@@ -1295,8 +1283,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: SongName
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 5bdb88282d4c71c4688bc7dcfc166114, type: 2}
-  m_sharedMaterial: {fileID: 3590037037637581457, guid: 5bdb88282d4c71c4688bc7dcfc166114, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f3674f2884e823946801dbfdc8ecbb48, type: 2}
+  m_sharedMaterial: {fileID: 3426190345783194053, guid: f3674f2884e823946801dbfdc8ecbb48, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

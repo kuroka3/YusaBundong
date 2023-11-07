@@ -10,10 +10,6 @@ public class SongSelectScript : MonoBehaviour
     public Image jacket;
     public TextMeshProUGUI artist;
 
-    public Sprite[] jackets;
-    public string[] names;
-    public string[] artists;
-
     void Awake() {
         updateData();
     }
@@ -27,9 +23,9 @@ public class SongSelectScript : MonoBehaviour
     private void updateData() {
         int songcode = GameManager.songCode;
 
-        nameT.text = names[songcode];
-        jacket.sprite = jackets[songcode];
-        artist.text = artists[songcode];
+        nameT.text = GameManager.datas[songcode][0];
+        jacket.sprite = GameManager.jackets[songcode];
+        artist.text = GameManager.datas[songcode][1];
     }
 
     public void left() {
@@ -37,13 +33,13 @@ public class SongSelectScript : MonoBehaviour
             GameManager.songCode--;
             updateData();
         } else {
-            GameManager.songCode = names.Length - 1;
+            GameManager.songCode = GameManager.datas.Length - 1;
             updateData();
         }
     }
 
     public void right() {
-        if (GameManager.songCode < names.Length - 1) {
+        if (GameManager.songCode < GameManager.datas.Length - 1) {
             GameManager.songCode++;
             updateData();
         } else {

@@ -699,15 +699,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8215a589068dfe742b6c9b07988514ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioS:
-  - {fileID: 8300000, guid: 0043888458a1b4f4cbd68423cdc86c19, type: 3}
-  - {fileID: 8300000, guid: 1aefd170c95b87d48b5de67ded7366f4, type: 3}
-  - {fileID: 8300000, guid: 065ba8e72d4ac5e4caa3b43bf887022c, type: 3}
   pool: {fileID: 1324317213}
-  chartFiles:
-  - {fileID: 4900000, guid: ecb19acffeed2af44b1378db8eb15feb, type: 3}
-  - {fileID: 4900000, guid: 5069bf59e3ec50647abdf282062970d0, type: 3}
-  - {fileID: 4900000, guid: 54b42ddfaeb7dac41a2020336a95d287, type: 3}
   offset: -170
   keys: 73000000630000000401000009010000
 --- !u!4 &1714861691

@@ -17,7 +17,7 @@ public class NoteScript : MonoBehaviour
 
     private void startSong(int songid) {
         audioS = gameObject.AddComponent<AudioSource>();
-        audioS.clip = GameManager.instance.audioS[songid];
+        audioS.clip = GameManager.songs[songid];
 
         IEnumerator startAudio() {
             yield return new WaitForSeconds(1);
@@ -30,6 +30,14 @@ public class NoteScript : MonoBehaviour
             int stack = 0;
 
             foreach (string element in GameManager.charts[songid]) {
+                try {
+                    string[] testData = element.Split(',');
+                    int[] testInts = new int[4]{Int32.Parse(testData[0]), Int32.Parse(testData[1]), id, Int32.Parse(testData[2])};
+                } catch(Exception e) {
+                    Debug.LogError(e);
+                    continue;
+                }
+
                 GameObject clone = GameManager.instance.pool.Get(0);
                 NoteInstScript cloneScript = clone.GetComponent<NoteInstScript>();
 
