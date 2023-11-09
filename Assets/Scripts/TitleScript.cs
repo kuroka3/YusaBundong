@@ -8,8 +8,7 @@ public class TitleScript : MonoBehaviour
     void Update() {
         
         if(Input.GetMouseButtonDown(0)) {
-            GameManager.loadCharts();
-            SceneManager.LoadScene("SongListScene");
+            SceneManager.LoadScene("LoadingScene");
         }
     }
 }

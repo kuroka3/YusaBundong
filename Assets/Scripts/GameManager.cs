@@ -21,6 +21,11 @@ public class GameManager : MonoBehaviour
     public static AudioClip[] songs;
     public static Sprite[] jackets;
 
+    public static double score = 0L;
+    public static long combo = 0L;
+    public static float acc = 0f;
+    public static List<float> judgeHis = new List<float>();
+
     void Start() {
         instance = this;
     }
@@ -45,30 +50,14 @@ public class GameManager : MonoBehaviour
             tmpdatas.Add(data);
             tmpaudios.Add(audio);
             tmpjackets.Add(jacket);
+
+            ProgressBar.value = tmpcharts.ToArray().Length/dirs.Length;
         }
 
         charts = tmpcharts.ToArray();
         datas = tmpdatas.ToArray();
         songs = tmpaudios.ToArray();
         jackets = tmpjackets.ToArray();
-
-        // foreach (TextAsset chartF in instance.chartFiles) {
-        //     StringReader reader = new StringReader(chartF.text);
-        //     List<string> tmplist = new List<string>();
-
-        //     string line;
-        //     line = reader.ReadLine();
-            
-        //     while (line != null) {
-        //         tmplist.Add(line);
-        //         line = reader.ReadLine();
-        //     }
-        //     reader.Close();
-
-        //     tmpcharts.Add(tmplist.ToArray());
-        // }
-
-        // charts = tmpcharts.ToArray();
     }
 
     private static string[] readFileData(string path) {
