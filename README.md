@@ -10,4 +10,3 @@ appdata/local/YusaBundong/Songs 폴더에 채보를 넣어서 플레이
  - 게임 중 esc
  - 곡 임포트
  - 결과창
- - 스코어 관련된 모든 성적
