@@ -1,11 +1,11 @@
+using System.Collections;
 using UnityEngine;
 
 public class NoteInstScript : MonoBehaviour
 {
 
-    public AudioSource audioS;
-    public int[] data;
-
+    private AudioSource audioS;
+    private int[] data;
     private int lineNum = -1;
     private float lineX = 0f;
     private float mytime = 0f;
@@ -13,54 +13,62 @@ public class NoteInstScript : MonoBehaviour
     private float endTime = -1;
     private float length = -1;
 
-    private int removing = 0;
-    private int longJudging = 0;
+    private bool removing = false;
+    private bool longJudging = false;
 
-    void Update() {
-        if (removing == 1) {
-            GameManager.priority[lineNum].Remove(id);
-            removing = 0;
-            GameManager.instance.pool.Release(gameObject);
-            clear();
-            return;
-        }
+    private IEnumerator noteUpdate() {
+        while(true) {
+            if (removing) {
+                GameManager.priority[lineNum].Remove(id);
+                removing = false;
+                GameManager.instance.pool.Release(gameObject);
+                clear();
+                break;
+            }
 
-        if (longJudging == 1) {
-            transform.position = new Vector3(lineX, -6.7f);
-            if (Input.GetKeyUp(GameManager.instance.keys[lineNum])) {
-                float namsi2 = endTime - (audioS.time + (float.Parse(GameManager.instance.offset.ToString())/1000));
-                JudgementScript.judge(namsi2);
-                removing = 1;
-                longJudging = 0;
-                return;
+            if (longJudging) {
+                transform.position = new Vector3(lineX, -6.7f);
+                if (Input.GetKeyUp(GameManager.instance.keys[lineNum])) {
+                    float namsi2 = endTime - (audioS.time + (float.Parse(GameManager.instance.offset.ToString())*0.001f));
+                    JudgementScript.judge(namsi2);
+                    removing = true;
+                    longJudging = false;
+                    yield return new WaitForSeconds(0.001f);
+                    continue;
+                } else {
+                    length = endTime - (audioS.time + (float.Parse(GameManager.instance.offset.ToString())*0.001f));
+                    transform.localScale = new Vector3(3.65f, length*168.71257f-0.02170f);
+                    yield return new WaitForSeconds(0.001f);
+                    continue;
+                }
+            }
+
+            float namsi = mytime - (audioS.time + (float.Parse(GameManager.instance.offset.ToString())*0.001f));
+            if(namsi > -GameManager.judgement[3]) {
+                transform.position = new Vector3(lineX, namsi * 27.8333f - 6.7f);
             } else {
-                length = endTime - (audioS.time + (float.Parse(GameManager.instance.offset.ToString())/1000));
-                transform.localScale = new Vector3(3, length*168.71257f-0.02170f);
-                return;
-            }
-        }
-
-        float namsi = mytime - (audioS.time + (float.Parse(GameManager.instance.offset.ToString())/1000));
-        if(namsi > -GameManager.judgement[3]) {
-            transform.position = new Vector3(lineX, namsi * (167/6) - 6.7f);
-        } else {
-            JudgementScript.judge(namsi);
-            GameManager.priority[lineNum].Remove(id);
-            GameManager.instance.pool.Release(gameObject);
-            clear();
-            return;
-        }
-
-        if (namsi <= GameManager.judgement[3]) {
-            if(!GameManager.priority[lineNum].Contains(id)) {
-                GameManager.priority[lineNum].Add(id);
-            }
-
-            if(Input.GetKeyDown(GameManager.instance.keys[lineNum]) && GameManager.priority[lineNum][0] == id) {
                 JudgementScript.judge(namsi);
-                if (length == -1) removing = 1; else longJudging = 1;
+                GameManager.priority[lineNum].Remove(id);
+                GameManager.instance.pool.Release(gameObject);
+                clear();
+                break;
             }
+
+            if (namsi <= GameManager.judgement[3]) {
+                if(!GameManager.priority[lineNum].Contains(id)) {
+                    GameManager.priority[lineNum].Add(id);
+                }
+
+                if(Input.GetKeyDown(GameManager.instance.keys[lineNum]) && GameManager.priority[lineNum][0] == id) {
+                    JudgementScript.judge(namsi);
+                    if (length == -1) removing = true; else longJudging = true;
+                }
+            }
+
+            yield return new WaitForSeconds(0.001f);
         }
+
+        yield return null;
     }
 
     public void sendData(AudioSource one, int[] two) {
@@ -90,19 +98,19 @@ public class NoteInstScript : MonoBehaviour
         }
 
         mytime = data[1];
-        mytime = mytime/1000;
+        mytime = mytime*0.001f;
 
         id = data[2];
         endTime = data[3];
 
         if(endTime != -1f) {
-            endTime = endTime/1000;
+            endTime = endTime*0.001f;
             length = endTime - mytime;
 
-            transform.localScale = new Vector3(3, length*168.71257f-0.02170f);
-
-            Debug.Log(id + ", " + endTime + ", " + length);
+            transform.localScale = new Vector3(3.65f, length*168.71257f-0.02170f);
         }
+
+        StartCoroutine(noteUpdate());
     }
 
     public void clear() {
@@ -113,7 +121,7 @@ public class NoteInstScript : MonoBehaviour
         endTime = -1;
         length = -1;
 
-        removing = 0;
-        longJudging = 0;
+        removing = false;
+        longJudging = false;
     }
 }

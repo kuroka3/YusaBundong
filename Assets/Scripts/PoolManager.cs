@@ -22,7 +22,7 @@ public class PoolManager : MonoBehaviour
             if (!obj.activeSelf) {
                 returnObj = obj;
                 returnObj.transform.position = new Vector3(0f, 20f, -10f);
-                returnObj.transform.localScale = new Vector3(3, 3);
+                returnObj.transform.localScale = new Vector3(3.65f, 3);
                 
                 returnObj.SetActive(true);
                 break;

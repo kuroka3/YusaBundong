@@ -26,7 +26,7 @@ public class GameManager : MonoBehaviour
     public static float acc = 0f;
     public static List<float> judgeHis = new List<float>();
 
-    void Start() {
+    void Awake() {
         instance = this;
     }
 
@@ -40,7 +40,8 @@ public class GameManager : MonoBehaviour
 
         string[] dirs = Directory.GetDirectories(songdir);
         
-        foreach (string song in dirs) {
+        for (int i = 0; i<dirs.Length; i++) {
+            string song = dirs[i];
             string[] data = readFileData(song + "\\info.txt");
             string[] chart = readFileData(song + "\\chart.txt");
             AudioClip audio = loadSong(song);

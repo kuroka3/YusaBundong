@@ -29,7 +29,8 @@ public class NoteScript : MonoBehaviour
             int id = 0;
             int stack = 0;
 
-            foreach (string element in GameManager.charts[songid]) {
+            for (int i = 0; i<GameManager.charts[songid].Length; i++) {
+                string element = GameManager.charts[songid][i];
                 try {
                     string[] testData = element.Split(',');
                     int[] testInts = new int[4]{Int32.Parse(testData[0]), Int32.Parse(testData[1]), id, Int32.Parse(testData[2])};
@@ -50,7 +51,7 @@ public class NoteScript : MonoBehaviour
 
                 if(stack == 50) {
                     stack = 0;
-                    yield return new WaitForSeconds(((float.Parse(data[1])/1000)-2)-audioS.time);
+                    yield return new WaitForSeconds(((float.Parse(data[1])*0.001f)-2)-audioS.time);
                 }
             }
         }
