@@ -1157,8 +1157,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pool: {fileID: 1324317213}
-  offset: -170
+  offset: -200
   keys: 73000000630000000401000009010000
+  hispeed: 31.32075
 --- !u!4 &1714861691
 Transform:
   m_ObjectHideFlags: 0

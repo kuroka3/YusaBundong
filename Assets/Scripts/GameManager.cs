@@ -9,11 +9,12 @@ public class GameManager : MonoBehaviour
     public PoolManager pool;
     public int offset;
     public KeyCode[] keys;
+    public float hispeed;
 
     public static int songCode = 0;
     public static List<int>[] priority = new List<int>[4]{new List<int>(), new List<int>(), new List<int>(), new List<int>()};
     public static GameManager instance;
-    public static float[] judgement = new float[4]{0.0417f, 0.0833f, 0.1083f, 0.125f};
+    public static float[] judgement = new float[4]{0.08f, 0.12f, 0.16f, 0.18f};
     public static string appdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\YusaBundong";
 
     public static string[][] charts;

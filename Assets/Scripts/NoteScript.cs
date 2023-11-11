@@ -10,8 +10,6 @@ public class NoteScript : MonoBehaviour
 
     void Start()
     {
-        GameManager.loadCharts();
-
         startSong(GameManager.songCode);
     }
 
