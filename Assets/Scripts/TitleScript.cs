@@ -5,6 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class TitleScript : MonoBehaviour
 {
+    void Start() {
+        Application.targetFrameRate = 144;
+    }
+
     void Update() {
         
         if(Input.GetMouseButtonDown(0)) {

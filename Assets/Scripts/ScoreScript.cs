@@ -12,8 +12,8 @@ public class ScoreScript : MonoBehaviour
     
 
     void FixedUpdate() {
-        score.text = GameManager.score.ToString();
+        score.text = Math.Round(GameManager.score).ToString();
         combo.text = GameManager.combo.ToString();
-        acc.text = (Math.Round(GameManager.acc*10000)/100).ToString() + "%";
+        acc.text = (Math.Round(GameManager.acc*10000)*0.01).ToString() + "%";
     }
 }

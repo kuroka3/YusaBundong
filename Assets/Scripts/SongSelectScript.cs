@@ -17,6 +17,10 @@ public class SongSelectScript : MonoBehaviour
     void Update() {
         if(Input.GetKeyDown(KeyCode.Space)) {
             startGame();
+        } else if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+            left();
+        } else if (Input.GetKeyDown(KeyCode.RightArrow)) {
+            right();
         }
     }
     

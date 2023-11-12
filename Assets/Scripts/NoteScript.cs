@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NoteScript : MonoBehaviour
 {
@@ -21,6 +22,10 @@ public class NoteScript : MonoBehaviour
             yield return new WaitForSeconds(1);
 
             audioS.Play();
+
+            yield return new WaitForSeconds(float.Parse(GameManager.datas[songid][2])*0.001f + 3f);
+
+            SceneManager.LoadScene("ResultScene");
         }
 
         IEnumerator NoteSummon() {

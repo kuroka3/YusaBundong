@@ -41,13 +41,13 @@ public class JudgementScript : MonoBehaviour
                 break;
             case 1:
                 GameManager.combo++;
-                GameManager.score += GameManager.combo/3*(2/3);
-                GameManager.judgeHis.Add(2/3);
+                GameManager.score += GameManager.combo/3*0.6667f;
+                GameManager.judgeHis.Add(0.6667f);
                 break;
             case 2:
                 GameManager.combo++;
-                GameManager.score += GameManager.combo/3*(1/3);
-                GameManager.judgeHis.Add(1/3);
+                GameManager.score += GameManager.combo/3*0.3333f;
+                GameManager.judgeHis.Add(0.3333f);
                 break;
             case 3:
             case 4:
@@ -57,9 +57,10 @@ public class JudgementScript : MonoBehaviour
             default:
                 break;
         }
+        GameManager.judges[judgecode]++;
 
         float addHis = 0f;
-        int count = 0;
+        float count = 0;
 
         foreach (float accF in GameManager.judgeHis) {
             addHis += accF;

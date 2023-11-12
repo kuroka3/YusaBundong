@@ -117,7 +117,6 @@ public class NoteInstScript : MonoBehaviour
             length = endTime - mytime;
 
             transform.localScale = new Vector3(3.65f, length * (GameManager.instance.hispeed*6.5831f-12.8649f)+(GameManager.instance.hispeed*0.0044f-0.1436f));
-            Debug.Log(length);
         }
 
         StartCoroutine(noteUpdate());

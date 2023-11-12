@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public static long combo = 0L;
     public static float acc = 0f;
     public static List<float> judgeHis = new List<float>();
+    public static int[] judges = new int[5]{0, 0, 0, 0, 0};
 
     void Awake() {
         instance = this;
@@ -100,5 +101,15 @@ public class GameManager : MonoBehaviour
             texture.LoadImage(fileData);
         }
         return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));;
+    }
+
+    public static void clear() {
+        score = 0L;
+        combo = 0L;
+        acc = 0f;
+        judgeHis.Clear();
+        for (int i = 0; i<judges.Length; i++) {
+            judges[i] = 0;
+        }
     }
 }
