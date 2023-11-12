@@ -44,6 +44,6 @@ public class ResultScript : MonoBehaviour
 
     public void end() {
         GameManager.clear();
-        SceneManager.LoadScene("SongListScene");
+        SceneManager.LoadScene(2);
     }
 }

@@ -33,12 +33,12 @@ public class PauseScript : MonoBehaviour
     public void retry() {
         unpause();
         GameManager.clear();
-        SceneManager.LoadScene("IngameScene");
+        SceneManager.LoadScene(3);
     }
 
     public void exit() {
         unpause();
         GameManager.clear();
-        SceneManager.LoadScene("SongListScene");
+        SceneManager.LoadScene(2);
     }
 }

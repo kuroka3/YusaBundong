@@ -21,6 +21,8 @@ public class SongSelectScript : MonoBehaviour
             left();
         } else if (Input.GetKeyDown(KeyCode.RightArrow)) {
             right();
+        } else if (Input.GetKeyDown(KeyCode.F5)) {
+            reload();
         }
     }
     
@@ -52,7 +54,11 @@ public class SongSelectScript : MonoBehaviour
         }
     }
 
+    public void reload() {
+        SceneManager.LoadScene(1);
+    }
+
     private void startGame() {
-        SceneManager.LoadScene("IngameScene");
+        SceneManager.LoadScene(3);
     }
 }

@@ -26,9 +26,9 @@ public class NoteScript : MonoBehaviour
 
             audioS.Play();
 
-            yield return new WaitForSeconds(float.Parse(GameManager.datas[songid][2])*0.001f + 3f);
+            yield return new WaitForSeconds(float.Parse(GameManager.datas[songid][3])*0.001f + 3f);
 
-            SceneManager.LoadScene("ResultScene");
+            SceneManager.LoadScene(4);
         }
 
         IEnumerator NoteSummon() {
@@ -39,7 +39,7 @@ public class NoteScript : MonoBehaviour
                 string element = GameManager.charts[songid][i];
                 try {
                     string[] testData = element.Split(',');
-                    int[] testInts = new int[4]{Int32.Parse(testData[0]), Int32.Parse(testData[1]), id, Int32.Parse(testData[2])};
+                    int[] testInts = new int[4]{int.Parse(testData[0]), int.Parse(testData[1]), id, int.Parse(testData[2])};
                 } catch(Exception e) {
                     Debug.LogError(e);
                     continue;
@@ -50,7 +50,7 @@ public class NoteScript : MonoBehaviour
 
                 string[] data = element.Split(',');
 
-                cloneScript.sendData(audioS, new int[4]{Int32.Parse(data[0]), Int32.Parse(data[1]), id, Int32.Parse(data[2])});
+                cloneScript.sendData(audioS, new int[4]{int.Parse(data[0]), int.Parse(data[1]), id, int.Parse(data[2])});
 
                 id++;
                 stack++;

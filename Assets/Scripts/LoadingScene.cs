@@ -1,5 +1,6 @@
 using System.Collections;
 using TMPro;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,11 +11,12 @@ public class LoadingScene : MonoBehaviour
     void Awake() {
 
         IEnumerator load() {
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(0.5f);
             loadInfo("Loading charts...");
+            ErrorDisplayer.ClearLog();
 
             if(GameManager.loadCharts()) {
-                SceneManager.LoadScene("SongListScene");
+                SceneManager.LoadScene(2);
             } else {
                 loadInfo("No Songs Found!");
             }            

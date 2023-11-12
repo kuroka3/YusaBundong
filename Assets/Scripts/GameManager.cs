@@ -47,8 +47,6 @@ public class GameManager : MonoBehaviour
         List<Sprite> tmpjackets = new List<Sprite>();
 
         string[] dirs = Directory.GetDirectories(songdir);
-
-        if (dirs.Length == 0) return false;
         
         for (int i = 0; i<dirs.Length; i++) {
             string song = dirs[i];
@@ -57,11 +55,15 @@ public class GameManager : MonoBehaviour
             AudioClip audio = loadSong(song);
             Sprite jacket = loadJacket(song);
 
-            tmpcharts.Add(chart);
-            tmpdatas.Add(data);
-            tmpaudios.Add(audio);
-            tmpjackets.Add(jacket);
-
+            if(checkInfo(data) && checkChart(chart) && audio != null && jacket != null) {
+                tmpcharts.Add(chart);
+                tmpdatas.Add(data);
+                tmpaudios.Add(audio);
+                tmpjackets.Add(jacket);
+            } else {
+                Debug.LogError("Cannot load song: " + song);
+                ErrorDisplayer.logError("Cannot load song: " + song);
+            }
             ProgressBar.value = tmpcharts.ToArray().Length/dirs.Length;
         }
 
@@ -70,7 +72,7 @@ public class GameManager : MonoBehaviour
         songs = tmpaudios.ToArray();
         jackets = tmpjackets.ToArray();
 
-        return true;
+        return charts.Length > 0;
     }
 
     private static string[] readFileData(string path) {
@@ -99,18 +101,23 @@ public class GameManager : MonoBehaviour
     }
 
     private static Sprite loadJacket(string path) {
-        string filePath = path + "\\jacket.png";
+        try {
+            string filePath = path + "\\jacket.png";
 
-        Texture2D texture = null;
-        byte[] fileData;
+            Texture2D texture = null;
+            byte[] fileData;
 
-        if (File.Exists(filePath))
-        {
-            fileData = File.ReadAllBytes(filePath);
-            texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
-            texture.LoadImage(fileData);
+            if (File.Exists(filePath))
+            {
+                fileData = File.ReadAllBytes(filePath);
+                texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                texture.LoadImage(fileData);
+            }
+            return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));;
+        } catch(Exception e) {
+            Debug.LogError(e);
+            return null;
         }
-        return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));;
     }
 
     public static void clear() {
@@ -125,5 +132,33 @@ public class GameManager : MonoBehaviour
             priority[i].Clear();
         }
         instance.pool.ReleaseAll(0);
+    }
+
+    private static bool checkInfo(string[] data) {
+        try {
+            string name = data[0];
+            string artist = data[1];
+            int bpm = int.Parse(data[2]);
+            float endTime = float.Parse(data[3]);
+
+            return true;
+        } catch (Exception e) {
+            Debug.LogError(e);
+            return false;
+        }
+    }
+
+    private static bool checkChart(string[] chart) {
+        try {
+            for (int i = 0; i<chart.Length; i++) {
+                string element = chart[i];
+                string[] testData = element.Split(',');
+                int[] testInts = new int[3]{int.Parse(testData[0]), int.Parse(testData[1]), int.Parse(testData[2])};
+            }
+            return true;
+        } catch (Exception e) {
+            Debug.LogError(e);
+            return false;
+        }
     }
 }

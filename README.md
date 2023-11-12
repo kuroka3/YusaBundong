@@ -13,7 +13,6 @@ Obvious ±80ms, Really ±120ms, May ±160ms, Hardly ±180ms, Miss -180~
 # 구현 안된 기능
  - 곡 임포트
  - 게임종료 버튼
- - 키빔
  - 설정
 
 # hi-speed 관련
