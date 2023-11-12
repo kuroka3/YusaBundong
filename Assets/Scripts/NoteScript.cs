@@ -9,9 +9,12 @@ public class NoteScript : MonoBehaviour
 
     private AudioSource audioS;
 
+    public static NoteScript instance;
+
     void Start()
     {
         startSong(GameManager.songCode);
+        instance = this;
     }
 
     private void startSong(int songid) {
@@ -62,5 +65,14 @@ public class NoteScript : MonoBehaviour
 
         StartCoroutine(NoteSummon());
         StartCoroutine(startAudio());
+    }
+
+    public static void pauseSong(bool boo) {
+        if (boo) instance.audioS.Pause();
+        else instance.audioS.UnPause();
+    }
+
+    public static bool isPlayingSong() {
+        return instance.audioS.isPlaying;
     }
 }

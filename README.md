@@ -11,8 +11,10 @@ appdata/local/YusaBundong/Songs 폴더에 채보를 넣어서 플레이
 Obvious ±80ms, Really ±120ms, May ±160ms, Hardly ±180ms, Miss -180~
 
 # 구현 안된 기능
- - 게임 중 esc
  - 곡 임포트
+ - 게임종료 버튼
+ - 키빔
+ - 설정
 
 # hi-speed 관련
 롱노트 길이 계산하기 귀찮아서 선형회귀로 만들었더니 hi-speed 변형이 클수록 롱노트 길이 오차가 심함.  

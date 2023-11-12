@@ -40,4 +40,12 @@ public class PoolManager : MonoBehaviour
     public void Release(GameObject poolGo) {
         poolGo.SetActive(false);
     }
+
+    public void ReleaseAll(int index) {
+        foreach (GameObject obj in pools[index]) {
+            obj.SetActive(false);
+            NoteInstScript objScript = obj.GetComponent<NoteInstScript>();
+            objScript.clear();
+        }
+    }
 }

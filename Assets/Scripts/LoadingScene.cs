@@ -11,17 +11,19 @@ public class LoadingScene : MonoBehaviour
 
         IEnumerator load() {
             yield return new WaitForSeconds(1.0f);
-            loadInfo("charts");
+            loadInfo("Loading charts...");
 
-            GameManager.loadCharts();
-
-            SceneManager.LoadScene("SongListScene");
+            if(GameManager.loadCharts()) {
+                SceneManager.LoadScene("SongListScene");
+            } else {
+                loadInfo("No Songs Found!");
+            }            
         }
 
         StartCoroutine(load());
     }
 
     private void loadInfo(string infoS) {
-        info.text = "Loading " + infoS + "...";
+        info.text = infoS;
     }
 }

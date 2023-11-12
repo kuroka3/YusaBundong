@@ -28,12 +28,18 @@ public class GameManager : MonoBehaviour
     public static List<float> judgeHis = new List<float>();
     public static int[] judges = new int[5]{0, 0, 0, 0, 0};
 
+    public static bool paused = false;
+
     void Awake() {
         instance = this;
     }
 
-    public static void loadCharts() {
+    public static bool loadCharts() {
+        if(!Directory.Exists(appdata)) Directory.CreateDirectory(appdata);
+
         string songdir = appdata + "\\Songs";
+
+        if(!Directory.Exists(songdir)) Directory.CreateDirectory(songdir);
 
         List<string[]> tmpdatas = new List<string[]>();
         List<string[]> tmpcharts = new List<string[]>();
@@ -41,6 +47,8 @@ public class GameManager : MonoBehaviour
         List<Sprite> tmpjackets = new List<Sprite>();
 
         string[] dirs = Directory.GetDirectories(songdir);
+
+        if (dirs.Length == 0) return false;
         
         for (int i = 0; i<dirs.Length; i++) {
             string song = dirs[i];
@@ -61,6 +69,8 @@ public class GameManager : MonoBehaviour
         datas = tmpdatas.ToArray();
         songs = tmpaudios.ToArray();
         jackets = tmpjackets.ToArray();
+
+        return true;
     }
 
     private static string[] readFileData(string path) {
@@ -111,5 +121,9 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i<judges.Length; i++) {
             judges[i] = 0;
         }
+        for (int i = 0; i<priority.Length; i++) {
+            priority[i].Clear();
+        }
+        instance.pool.ReleaseAll(0);
     }
 }

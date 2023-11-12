@@ -18,6 +18,8 @@ public class NoteInstScript : MonoBehaviour
     private bool longJudging = false;
 
     void Update() {
+        if(GameManager.paused) return;
+
         namsi = mytime - (audioS.time + (float.Parse(GameManager.instance.offset.ToString())*0.001f));
 
         if(namsi > -GameManager.judgement[3]) {
