@@ -61,4 +61,8 @@ public class SongSelectScript : MonoBehaviour
     private void startGame() {
         SceneManager.LoadScene(3);
     }
+
+    public void settings() {
+        SceneManager.LoadScene(5);
+    }
 }

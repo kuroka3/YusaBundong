@@ -7,15 +7,16 @@ using UnityEngine.Networking;
 public class GameManager : MonoBehaviour
 {
     public PoolManager pool;
-    public int offset;
-    public KeyCode[] keys;
-    public float hispeed;
+    public static int offset;
+    public static float hispeed;
 
     public static int songCode = 0;
     public static List<int>[] priority = new List<int>[4]{new List<int>(), new List<int>(), new List<int>(), new List<int>()};
     public static GameManager instance;
     public static float[] judgement = new float[4]{0.08f, 0.12f, 0.16f, 0.18f};
     public static string appdata = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\YusaBundong";
+    public static string tmpFolder = appdata + "\\tmp";
+    public static KeyCode[] keys;
 
     public static string[][] charts;
     public static string[][] datas;
@@ -152,6 +153,7 @@ public class GameManager : MonoBehaviour
         try {
             for (int i = 0; i<chart.Length; i++) {
                 string element = chart[i];
+                if(element.Equals("")) continue;
                 string[] testData = element.Split(',');
                 int[] testInts = new int[3]{int.Parse(testData[0]), int.Parse(testData[1]), int.Parse(testData[2])};
             }
@@ -160,5 +162,20 @@ public class GameManager : MonoBehaviour
             Debug.LogError(e);
             return false;
         }
+    }
+
+    public static void loadSettings() {
+        keys = new KeyCode[4];
+        string settingsFile = appdata + "\\settings.txt";
+        if (!File.Exists(settingsFile)) File.WriteAllLines(settingsFile, new string[]{((int) KeyCode.D).ToString(), ((int) KeyCode.F).ToString(), ((int) KeyCode.J).ToString(), ((int) KeyCode.K).ToString(), 0.ToString(), (31.32075f).ToString()});
+        string[] datas = File.ReadAllLines(settingsFile);
+
+        for (int i = 0; i<4; i++) {
+            int j = int.Parse(datas[i]);
+            keys[i] = (KeyCode) j;
+        }
+        
+        offset = int.Parse(long.Parse(datas[4]).ToString());
+        hispeed = float.Parse(double.Parse(datas[5]).ToString());
     }
 }

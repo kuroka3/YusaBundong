@@ -1,6 +1,5 @@
 using System.Collections;
 using TMPro;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,7 +18,9 @@ public class LoadingScene : MonoBehaviour
                 SceneManager.LoadScene(2);
             } else {
                 loadInfo("No Songs Found!");
-            }            
+            }        
+
+            GameManager.loadSettings();    
         }
 
         StartCoroutine(load());
