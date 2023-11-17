@@ -2,30 +2,29 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
+using Newtonsoft.Json;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
 
-public enum KeySets
-{
-    Line1,
-    Line2,
-    Line3,
-    Line4,
-}
 
 public class SettingsScript : MonoBehaviour
 {
     public TMP_Dropdown resdropdown;
-    public GameObject garimmak;
     List<Resolution> resolutions = new();
-    private int resNum = 0;
-    private FullScreenMode fulls = FullScreenMode.ExclusiveFullScreen;
-    public static SettingsScript instance;
+    public Toggle fullsToggle;
+
+    public GameObject garimmak;
     private int KeySetting = -1;
     public TextMeshProUGUI[] keyTexts;
+
+    public TextMeshProUGUI offsetValueText;
+    public TextMeshProUGUI hispeedValueText;
+
+    public static SettingsScript instance;
 
     void Start()
     {
@@ -39,7 +38,7 @@ public class SettingsScript : MonoBehaviour
         if(Input.anyKeyDown) {
             foreach (KeyCode kcode in System.Enum.GetValues(typeof(KeyCode))) {
                 if(Input.GetKeyDown(kcode)) {
-                    GameManager.keys[KeySetting] = kcode;
+                    SettingsManager.keys[KeySetting] = kcode;
                     keyTexts[KeySetting].text = kcode.ToString();
                     KeySetting = -1;
                     garimmak.SetActive(false);
@@ -63,21 +62,26 @@ public class SettingsScript : MonoBehaviour
             resdropdown.options.Add(option);
         }
         resdropdown.RefreshShownValue();
-        resdropdown.value = resNum;
+        resdropdown.value = SettingsManager.resNum;
         
-        for (int i = 0; i < GameManager.keys.Length; i++) {
-            keyTexts[i].text = GameManager.keys[i].ToString();
+        for (int i = 0; i < SettingsManager.keys.Length; i++) {
+            keyTexts[i].text = SettingsManager.keys[i].ToString();
         }
+
+        offsetValueText.text = SettingsManager.offset + "ms";
+        hispeedValueText.text = (Math.Round(SettingsManager.hispeed*10)*0.1).ToString();
+
+        fullsToggle.isOn = SettingsManager.fulls == FullScreenMode.ExclusiveFullScreen;
     }
 
     public void DropboxOptionChange(int i) {
-        resNum = i;
-        Screen.SetResolution(resolutions[resNum].width, resolutions[resNum].height, fulls, resolutions[resNum].refreshRateRatio);
+        SettingsManager.resNum = i;
+        Screen.SetResolution(resolutions[SettingsManager.resNum].width, resolutions[SettingsManager.resNum].height, SettingsManager.fulls, resolutions[SettingsManager.resNum].refreshRateRatio);
     }
 
     public void FullScreenBtn(bool isFullS) {
-        fulls = isFullS ? FullScreenMode.ExclusiveFullScreen : FullScreenMode.Windowed;
-        Screen.SetResolution(resolutions[resNum].width, resolutions[resNum].height, fulls, resolutions[resNum].refreshRateRatio);
+        SettingsManager.fulls = isFullS ? FullScreenMode.ExclusiveFullScreen : FullScreenMode.Windowed;
+        Screen.SetResolution(resolutions[SettingsManager.resNum].width, resolutions[SettingsManager.resNum].height, SettingsManager.fulls, resolutions[SettingsManager.resNum].refreshRateRatio);
     }
 
     public void keySet(int keyLine) {
@@ -86,8 +90,83 @@ public class SettingsScript : MonoBehaviour
         garimmak.SetActive(true);
     }
 
+    public void OffsetvalueChange(bool isUp) {
+        int changeValue;
+
+        if (Input.GetKey(KeyCode.LeftShift)) changeValue = 1;
+        else if (Input.GetKey(KeyCode.LeftControl)) changeValue = 10;
+        else changeValue = 5;
+
+        if (isUp) SettingsManager.offset += changeValue;
+        else SettingsManager.offset -= changeValue;
+
+        offsetValueText.text = SettingsManager.offset + "ms";
+    }
+
+    public void HiSpeedvalueChange(bool isUp) {
+        float changeValue;
+
+        if (Input.GetKey(KeyCode.LeftShift)) changeValue = 0.1f;
+        else if (Input.GetKey(KeyCode.LeftControl)) changeValue = 1f;
+        else changeValue = 0.5f;
+
+        if (isUp) SettingsManager.hispeed += changeValue;
+        else SettingsManager.hispeed -= changeValue;
+
+        hispeedValueText.text = (Math.Round(SettingsManager.hispeed*10)*0.1).ToString();
+    }
+
     public void gotoHome() {
-        File.WriteAllLines(GameManager.appdata + "\\settings.txt", new string[]{((int) GameManager.keys[0]).ToString(), ((int) GameManager.keys[1]).ToString(), ((int) GameManager.keys[2]).ToString(), ((int) GameManager.keys[3]).ToString(), GameManager.offset.ToString(), GameManager.offset.ToString()});
-        SceneManager.LoadScene(2);
+        SettingsManager.Save();
+        SceneManager.LoadScene(1);
+    }
+}
+
+public static class SettingsManager {
+    public static FullScreenMode fulls;
+    public static int resNum;
+
+    public static KeyCode[] keys;
+
+    public static int offset;
+    public static float hispeed;
+
+    private static string settingsFile = GameManager.appdata + "\\settings.cfg";
+    private static Dictionary<string, object> values = new();
+
+
+    public static void ResetSettings() {
+        fulls = FullScreenMode.ExclusiveFullScreen;
+        resNum = 0;
+
+        keys = new KeyCode[4]{KeyCode.D, KeyCode.F, KeyCode.J, KeyCode.K};
+
+        offset = 0;
+        hispeed = 31.3f;
+        Save();
+    }
+
+    public static void Save() {
+        values["fulls"] = fulls == FullScreenMode.ExclusiveFullScreen;
+        values["resNum"] = resNum;
+        values["keys"] = keys;
+        values["offset"] = offset;
+        values["hispeed"] = hispeed;
+
+        File.WriteAllText(settingsFile, JsonConvert.SerializeObject(values));
+    }
+
+    public static void Load() {
+        if (!File.Exists(settingsFile)) ResetSettings();
+
+        values = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(settingsFile));
+
+        fulls = (bool) values["fulls"] ? FullScreenMode.ExclusiveFullScreen : FullScreenMode.Windowed;
+        resNum = int.Parse(values["resNum"].ToString());
+
+        keys = JsonConvert.DeserializeObject<KeyCode[]>(values["keys"].ToString());
+
+        offset = int.Parse(values["offset"].ToString());
+        hispeed = float.Parse(values["hispeed"].ToString());
     }
 }

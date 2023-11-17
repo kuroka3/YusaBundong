@@ -19,7 +19,7 @@ public class KeyBeamScript : MonoBehaviour
 
     void FixedUpdate() {
         for (int i = 0; i<keybeams.Length; i++) {
-            if(Input.GetKey(GameManager.keys[i])) {
+            if(Input.GetKey(SettingsManager.keys[i])) {
                 renderers[i].color = dft.setA(dftA);
             } else if(renderers[i].color.a > 0) {
                 renderers[i].color = renderers[i].color.setA(renderers[i].color.a - Time.fixedDeltaTime);
