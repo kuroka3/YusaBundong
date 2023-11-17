@@ -65,4 +65,8 @@ public class SongSelectScript : MonoBehaviour
     public void settings() {
         SceneManager.LoadScene(5);
     }
+
+    public void exit() {
+        Application.Quit(0);
+    }
 }
