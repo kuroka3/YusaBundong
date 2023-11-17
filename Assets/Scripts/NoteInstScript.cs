@@ -59,7 +59,7 @@ public class NoteInstScript : MonoBehaviour
                     } else {
                         length = endTime - (audioS.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
                         if(length < 0) length = 0;
-                        transform.localScale = new Vector3(3.65f, length * (SettingsManager.hispeed*6.5831f-12.8649f)+(SettingsManager.hispeed*0.0044f-0.1436f));
+                        transform.localScale = new Vector3(3.65f, length * SettingsManager.hispeed * 6.24f);
                     }
                 }
                 
@@ -118,7 +118,7 @@ public class NoteInstScript : MonoBehaviour
             endTime = endTime*0.001f;
             length = endTime - mytime;
 
-            transform.localScale = new Vector3(3.65f, length * (SettingsManager.hispeed*6.5831f-12.8649f)+(SettingsManager.hispeed*0.0044f-0.1436f));
+            transform.localScale = new Vector3(3.65f, length * SettingsManager.hispeed * 6.24f);
         }
 
         StartCoroutine(noteUpdate());
