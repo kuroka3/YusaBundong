@@ -11,6 +11,5 @@ appdata/local/YusaBundong/Songs 폴더에 채보를 넣어서 플레이
 Obvious ±80ms, Really ±120ms, May ±160ms, Hardly ±180ms, Miss -180~
 
 # 구현 안된 기능
- - 곡 임포트
  - 오토플레이
  - 개인 리더보드

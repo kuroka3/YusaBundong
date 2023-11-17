@@ -7,11 +7,23 @@ using UnityEngine;
 
 public class ConvertScript : MonoBehaviour
 {
-    public static bool makeSongChartfromOSU(string target, string title, string artist, int bpm, int endTime, string jacketPath, string audioPath, string endPath) {
+    public static bool makeSongChartfromOSU(string target, string title, string artist, int bpm, string jacketPath, string audioPath, string endPath) {
         try {
             if(!Directory.Exists(GameManager.tmpFolder)) Directory.CreateDirectory(GameManager.tmpFolder);
             string chartFileName = GameManager.tmpFolder + "\\" + Guid.NewGuid().ToString() + ".tmp";
-            File.WriteAllLines(chartFileName, convertChart(target));
+            string[] chart = convertChart(target);
+            File.WriteAllLines(chartFileName, chart);
+
+            int endTime = 0;
+
+            int fromlength = 1;
+            while(string.IsNullOrEmpty(chart[chart.Length-fromlength])) fromlength++;
+
+            string[] lastLineData = chart[chart.Length-fromlength].Split(",");
+
+            if(lastLineData[2].Equals("-1")) endTime = int.Parse(lastLineData[1]);
+            else endTime = int.Parse(lastLineData[2]); 
+
             return makeSongChart(chartFileName, title, artist, bpm, endTime, jacketPath, audioPath, endPath);
         } catch (Exception e) {
             Debug.LogError(e);

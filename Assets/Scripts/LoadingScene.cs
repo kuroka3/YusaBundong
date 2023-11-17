@@ -6,9 +6,11 @@ using UnityEngine.SceneManagement;
 public class LoadingScene : MonoBehaviour
 {
     public TextMeshProUGUI info;
+    public GameObject button;
 
     void Awake() {
         ProgressBar.value = 0f;
+        button.SetActive(false);
 
         IEnumerator Init() {
             yield return new AsyncOperation();
@@ -17,6 +19,7 @@ public class LoadingScene : MonoBehaviour
 
             if(!GameManager.loadCharts()) {
                 loadInfo("No Songs Found!");
+                button.SetActive(true);
             } else {
                 ProgressBar.value = 0.5f;
 
@@ -33,5 +36,9 @@ public class LoadingScene : MonoBehaviour
 
     private void loadInfo(string infoS) {
         info.text = infoS;
+    }
+
+    public void import() {
+        SceneManager.LoadScene(6);
     }
 }
