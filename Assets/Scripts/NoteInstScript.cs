@@ -36,43 +36,45 @@ public class NoteInstScript : MonoBehaviour
 
     private IEnumerator noteUpdate() {
         while(true) {
-            if (removing) {
-                GameManager.priority[lineNum].Remove(id);
-                removing = false;
-                longJudging = false;
-                GameManager.instance.pool.Release(gameObject);
-                clear();
-                break;
-            }
+            if (!GameManager.paused) {
+                if (removing) {
+                    GameManager.priority[lineNum].Remove(id);
+                    removing = false;
+                    longJudging = false;
+                    GameManager.instance.pool.Release(gameObject);
+                    clear();
+                    break;
+                }
 
-            if (longJudging) {
-                transform.position = new Vector3(lineX, -6.7f);
-                if (Input.GetKeyUp(SettingsManager.keys[lineNum])) {
-                    float namsi2 = endTime - (audioS.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
-                    JudgementScript.judge(namsi2);
-                    removing = true;
-                } else {
-                    float namsi2 = endTime - (audioS.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
-                    if(namsi2 <= -GameManager.judgement[3]) {
+                if (longJudging) {
+                    transform.position = new Vector3(lineX, -6.7f);
+                    if (Input.GetKeyUp(SettingsManager.keys[lineNum])) {
+                        float namsi2 = endTime - (audioS.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
                         JudgementScript.judge(namsi2);
                         removing = true;
                     } else {
-                        length = endTime - (audioS.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
-                        if(length < 0) length = 0;
-                        transform.localScale = new Vector3(3.65f, length * SettingsManager.hispeed * 6.24f);
+                        float namsi2 = endTime - (audioS.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
+                        if(namsi2 <= -GameManager.judgement[3]) {
+                            JudgementScript.judge(namsi2);
+                            removing = true;
+                        } else {
+                            length = endTime - (audioS.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
+                            if(length < 0) length = 0;
+                            transform.localScale = new Vector3(3.65f, length * SettingsManager.hispeed * 6.24f);
+                        }
                     }
-                }
-                
-            }
-
-            if (namsi <= GameManager.judgement[3]) {
-                if(!GameManager.priority[lineNum].Contains(id)) {
-                    GameManager.priority[lineNum].Add(id);
+                    
                 }
 
-                if(Input.GetKeyDown(SettingsManager.keys[lineNum]) && GameManager.priority[lineNum][0] == id) {
-                    JudgementScript.judge(namsi);
-                    if (length == -1) removing = true; else longJudging = true;
+                if (namsi <= GameManager.judgement[3]) {
+                    if(!GameManager.priority[lineNum].Contains(id)) {
+                        GameManager.priority[lineNum].Add(id);
+                    }
+
+                    if(Input.GetKeyDown(SettingsManager.keys[lineNum]) && GameManager.priority[lineNum][0] == id) {
+                        JudgementScript.judge(namsi);
+                        if (length == -1) removing = true; else longJudging = true;
+                    }
                 }
             }
 

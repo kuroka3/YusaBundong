@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -9,6 +8,7 @@ public class SongSelectScript : MonoBehaviour
     public TextMeshProUGUI nameT;
     public Image jacket;
     public TextMeshProUGUI artist;
+    public TextMeshProUGUI bpmview;
 
     void Awake() {
         updateData();
@@ -32,6 +32,7 @@ public class SongSelectScript : MonoBehaviour
         nameT.text = GameManager.datas[songcode][0];
         jacket.sprite = GameManager.jackets[songcode];
         artist.text = GameManager.datas[songcode][1];
+        bpmview.text = GameManager.datas[songcode][2] + "BPM";
     }
 
     public void left() {

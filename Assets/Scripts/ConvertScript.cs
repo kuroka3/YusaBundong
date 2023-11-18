@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,7 +30,7 @@ public class ConvertScript : MonoBehaviour
         }
     }
 
-    public static bool makeSongChart(string target, string title, string artist, int bpm, int endTime, string jacketPath, string audioPath, string endPath) {
+    public static bool makeSongChart(string target, string title, string artist, int bpm, int endTime, string jacketPath, string audioPath, string endPath, bool DeleteOnEnd = false) {
         try {
             if (!Directory.Exists(endPath)) Directory.CreateDirectory(endPath);
 
@@ -46,6 +45,8 @@ public class ConvertScript : MonoBehaviour
 
             // audio.mp3
             File.Copy(audioPath, endPath + "\\audio.mp3");
+
+            if(DeleteOnEnd) File.Delete(target);
 
             return true;
         } catch (Exception e) {

@@ -13,3 +13,4 @@ Obvious ±80ms, Really ±120ms, May ±160ms, Hardly ±180ms, Miss -180~
 # 구현 안된 기능
  - 오토플레이
  - 개인 리더보드
+ - 인게임 변속(소프란)
