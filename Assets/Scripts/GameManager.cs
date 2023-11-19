@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -117,7 +118,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public static void clear() {
+    public static void clear(bool isIngame = true) {
         score = 0L;
         combo = 0L;
         acc = 0f;
@@ -128,7 +129,10 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i<priority.Length; i++) {
             priority[i].Clear();
         }
-        instance.pool.ReleaseAll(0);
+        if(isIngame) {
+            instance.pool.ReleaseAll(0);
+            NoteScript.instance.end();
+        }
     }
 
     private static bool checkInfo(string[] data) {

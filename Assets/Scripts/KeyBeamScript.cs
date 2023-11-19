@@ -18,7 +18,7 @@ public class KeyBeamScript : MonoBehaviour
     }
 
     void FixedUpdate() {
-        if(GameManager.paused) return;
+        if(GameManager.paused || !SettingsManager.keybeamtoggle) return;
 
         for (int i = 0; i<keybeams.Length; i++) {
             if(Input.GetKey(SettingsManager.keys[i])) {

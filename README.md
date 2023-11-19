@@ -14,3 +14,4 @@ Obvious ±80ms, Really ±120ms, May ±160ms, Hardly ±180ms, Miss -180~
  - 오토플레이
  - 개인 리더보드
  - 인게임 변속(소프란)
+ - 마우스 휠로 소리 조절

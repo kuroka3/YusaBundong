@@ -4,7 +4,6 @@ using UnityEngine;
 public class NoteInstScript : MonoBehaviour
 {
 
-    private AudioSource audioS;
     private int[] data;
     private int lineNum = -1;
     private float lineX = 0f;
@@ -20,7 +19,7 @@ public class NoteInstScript : MonoBehaviour
     void Update() {
         if(GameManager.paused) return;
 
-        namsi = mytime - (audioS.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
+        namsi = mytime - (NoteScript.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
 
         if(namsi > -GameManager.judgement[3]) {
                 transform.position = new Vector3(lineX, namsi * SettingsManager.hispeed - 6.6f);
@@ -49,16 +48,16 @@ public class NoteInstScript : MonoBehaviour
                 if (longJudging) {
                     transform.position = new Vector3(lineX, -6.7f);
                     if (Input.GetKeyUp(SettingsManager.keys[lineNum])) {
-                        float namsi2 = endTime - (audioS.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
+                        float namsi2 = endTime - (NoteScript.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
                         JudgementScript.judge(namsi2);
                         removing = true;
                     } else {
-                        float namsi2 = endTime - (audioS.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
+                        float namsi2 = endTime - (NoteScript.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
                         if(namsi2 <= -GameManager.judgement[3]) {
                             JudgementScript.judge(namsi2);
                             removing = true;
                         } else {
-                            length = endTime - (audioS.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
+                            length = endTime - (NoteScript.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
                             if(length < 0) length = 0;
                             transform.localScale = new Vector3(3.65f, length * SettingsManager.hispeed * 6.24f);
                         }
@@ -84,9 +83,7 @@ public class NoteInstScript : MonoBehaviour
         yield return null;
     }
 
-    public void sendData(AudioSource one, int[] two) {
-        audioS = one;
-
+    public void sendData(int[] two) {
         data = two;
 
         lineNum = data[0];

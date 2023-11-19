@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,18 +9,36 @@ public class NoteScript : MonoBehaviour
     public GameObject prefab;
 
     private AudioSource audioS;
+    private Coroutine syncTimeCour;
 
     public static NoteScript instance;
+    public static float time;
 
     void Start()
     {
-        startSong(GameManager.songCode);
         instance = this;
+        startSong(GameManager.songCode);
+        syncTimeCour = StartCoroutine(syncTime());
+    }
+
+    void Update() {
+        if (!audioS.isPlaying) return;
+        time += Time.deltaTime;
+    }
+
+    private IEnumerator syncTime() {
+        while(true) {
+            if(audioS.time - time >= 0.04f || time - audioS.time >= 0.04f) {
+                time = audioS.time;
+            }
+            yield return new WaitForSeconds(1f);
+        }
     }
 
     private void startSong(int songid) {
         audioS = gameObject.AddComponent<AudioSource>();
         audioS.clip = GameManager.songs[songid];
+        audioS.volume = SettingsManager.volume.ToFloat()*0.01f;
 
         IEnumerator startAudio() {
             yield return new WaitForSeconds(1);
@@ -29,6 +48,7 @@ public class NoteScript : MonoBehaviour
             yield return new WaitForSeconds(float.Parse(GameManager.datas[songid][3])*0.001f + 3f);
 
             SceneManager.LoadScene(4);
+            StopCoroutine(syncTimeCour);
         }
 
         IEnumerator NoteSummon() {
@@ -50,7 +70,7 @@ public class NoteScript : MonoBehaviour
 
                 string[] data = element.Split(',');
 
-                cloneScript.sendData(audioS, new int[4]{int.Parse(data[0]), int.Parse(data[1]), id, int.Parse(data[2])});
+                cloneScript.sendData(new int[4]{int.Parse(data[0]), int.Parse(data[1]), id, int.Parse(data[2])});
 
                 id++;
                 stack++;
@@ -74,5 +94,9 @@ public class NoteScript : MonoBehaviour
 
     public static bool isPlayingSong() {
         return instance.audioS.isPlaying;
+    }
+
+    public void end() {
+        StopCoroutine(syncTime());
     }
 }
