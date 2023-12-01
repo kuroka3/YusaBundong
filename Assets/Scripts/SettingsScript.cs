@@ -365,6 +365,8 @@ public static class SettingsManager {
         else QualitySettings.vSyncCount = 0;
 
         Application.targetFrameRate = targetFrames[targetFrame];
+
+        GameManager.OffsetFloat = offset.ToFloat()*0.001f;
     }
 
     private static object GetorNull(string key) {

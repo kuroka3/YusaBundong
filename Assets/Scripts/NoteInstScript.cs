@@ -15,14 +15,19 @@ public class NoteInstScript : MonoBehaviour
 
     private bool removing = false;
     private bool longJudging = false;
-
+    
     void Update() {
+        namsi = mytime - (NoteScript.time + GameManager.OffsetFloat);
+
+        MoveNote();
+        JudgeNote();
+    }
+
+    void MoveNote() {
         if(GameManager.paused) return;
 
-        namsi = mytime - (NoteScript.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
-
         if(namsi > -GameManager.judgement[3]) {
-                transform.position = new Vector3(lineX, namsi * SettingsManager.hispeed - 6.6f);
+            transform.position = new Vector3(lineX, namsi * SettingsManager.hispeed - 7f);
         } else {
             if(longJudging == false) {
                 JudgementScript.judge(namsi);
@@ -31,56 +36,55 @@ public class NoteInstScript : MonoBehaviour
                 clear();
             }
         }
+
+        if (removing) {
+                GameManager.priority[lineNum].Remove(id);
+                removing = false;
+                longJudging = false;
+                GameManager.instance.pool.Release(gameObject);
+                clear();
+                return;
+            }
+
+        if (longJudging) {
+            transform.position = new Vector3(lineX, -7f);
+            float namsi2 = endTime - (NoteScript.time + GameManager.OffsetFloat);
+            
+            if(namsi2 > -GameManager.judgement[3]) {
+                length = endTime - (NoteScript.time + GameManager.OffsetFloat);
+                if(length < 0) length = 0;
+                transform.localScale = new Vector3(2f, GetLongnoteLength(length));
+            }
+        }
     }
 
-    private IEnumerator noteUpdate() {
-        while(true) {
-            if (!GameManager.paused) {
-                if (removing) {
-                    GameManager.priority[lineNum].Remove(id);
-                    removing = false;
-                    longJudging = false;
-                    GameManager.instance.pool.Release(gameObject);
-                    clear();
-                    break;
-                }
+    void JudgeNote() {
+        if (GameManager.paused) return;
 
-                if (longJudging) {
-                    transform.position = new Vector3(lineX, -6.7f);
-                    if (Input.GetKeyUp(SettingsManager.keys[lineNum])) {
-                        float namsi2 = endTime - (NoteScript.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
+        if (namsi <= GameManager.judgement[3]) {
+            if(!GameManager.priority[lineNum].Contains(id)) {
+                GameManager.priority[lineNum].Add(id);
+            }
+
+            if(Input.GetKeyDown(SettingsManager.keys[lineNum]) && GameManager.priority[lineNum][0] == id) {
+                JudgementScript.judge(namsi);
+                if (length == -1) removing = true; else longJudging = true;
+            }
+
+            if (longJudging) {
+                float namsi2 = endTime - (NoteScript.time + GameManager.OffsetFloat);
+
+                if (Input.GetKeyUp(SettingsManager.keys[lineNum])) {
+                    JudgementScript.judge(namsi2);
+                    removing = true;
+                } else {
+                    if(namsi2 <= -GameManager.judgement[3]) {
                         JudgementScript.judge(namsi2);
                         removing = true;
-                    } else {
-                        float namsi2 = endTime - (NoteScript.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
-                        if(namsi2 <= -GameManager.judgement[3]) {
-                            JudgementScript.judge(namsi2);
-                            removing = true;
-                        } else {
-                            length = endTime - (NoteScript.time + (float.Parse(SettingsManager.offset.ToString())*0.001f));
-                            if(length < 0) length = 0;
-                            transform.localScale = new Vector3(3.65f, length * SettingsManager.hispeed * 6.24f);
-                        }
-                    }
-                    
-                }
-
-                if (namsi <= GameManager.judgement[3]) {
-                    if(!GameManager.priority[lineNum].Contains(id)) {
-                        GameManager.priority[lineNum].Add(id);
-                    }
-
-                    if(Input.GetKeyDown(SettingsManager.keys[lineNum]) && GameManager.priority[lineNum][0] == id) {
-                        JudgementScript.judge(namsi);
-                        if (length == -1) removing = true; else longJudging = true;
                     }
                 }
             }
-
-            yield return new WaitForSeconds(0.001f);
         }
-
-        yield return null;
     }
 
     public void sendData(int[] two) {
@@ -117,10 +121,8 @@ public class NoteInstScript : MonoBehaviour
             endTime = endTime*0.001f;
             length = endTime - mytime;
 
-            transform.localScale = new Vector3(3.65f, length * SettingsManager.hispeed * 6.24f);
+            transform.localScale = new Vector3(2f, GetLongnoteLength(length));
         }
-
-        StartCoroutine(noteUpdate());
     }
 
     public void clear() {
@@ -134,5 +136,9 @@ public class NoteInstScript : MonoBehaviour
 
         removing = false;
         longJudging = false;
+    }
+
+    private float GetLongnoteLength(float length) {
+        return length * SettingsManager.hispeed;
     }
 }

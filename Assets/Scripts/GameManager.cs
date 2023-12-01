@@ -29,6 +29,8 @@ public class GameManager : MonoBehaviour
 
     public static bool paused = false;
 
+    public static float OffsetFloat;
+
     void Awake() {
         instance = this;
     }
