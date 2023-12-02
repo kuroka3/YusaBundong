@@ -11,24 +11,28 @@ public class NoteScript : MonoBehaviour
     private AudioSource audioS;
     private Coroutine syncTimeCour;
 
+    public int LimitError;
+
+    private float LimitErrorFloat;
+
     public static NoteScript instance;
-    public static float time;
+    public static float time = -1f;
 
     void Start()
     {
         instance = this;
+        LimitErrorFloat = LimitError.ToFloat()*0.001f;
         startSong(GameManager.songCode);
-        syncTimeCour = StartCoroutine(syncTime());
     }
 
     void Update() {
-        if (!audioS.isPlaying) return;
+        if (GameManager.paused) return;
         time += Time.deltaTime;
     }
 
     private IEnumerator syncTime() {
         while(true) {
-            if(audioS.time - time >= 0.04f || time - audioS.time >= 0.04f) {
+            if(Math.Abs(audioS.time - time) >= LimitErrorFloat) {
                 time = audioS.time;
             }
             yield return new WaitForSeconds(1f);
@@ -36,6 +40,8 @@ public class NoteScript : MonoBehaviour
     }
 
     private void startSong(int songid) {
+        time = -1f;
+
         audioS = gameObject.AddComponent<AudioSource>();
         audioS.clip = GameManager.songs[songid];
         audioS.volume = SettingsManager.volume.ToFloat()*0.01f;
@@ -44,6 +50,7 @@ public class NoteScript : MonoBehaviour
             yield return new WaitForSeconds(1);
 
             audioS.Play();
+            syncTimeCour = StartCoroutine(syncTime());
 
             yield return new WaitForSeconds(float.Parse(GameManager.datas[songid][3])*0.001f + 3f);
 
@@ -52,33 +59,47 @@ public class NoteScript : MonoBehaviour
         }
 
         IEnumerator NoteSummon() {
+            yield return new AsyncOperation();
+
             int id = 0;
-            int stack = 0;
+            // int stack = 0;
 
             for (int i = 0; i<GameManager.charts[songid].Length; i++) {
-                string element = GameManager.charts[songid][i];
+                GameObject clone;
+
+                while (true) {
+                    clone = GameManager.instance.pool.Get(0);
+
+                    if (clone == null) {
+                        yield return new WaitForSeconds(0.1f);
+                    } else {
+                        break;
+                    }
+                }
+
+                string Element = GameManager.charts[songid][i];
+                string[] Data;
+                int[] Data2Int;
                 try {
-                    string[] testData = element.Split(',');
-                    int[] testInts = new int[4]{int.Parse(testData[0]), int.Parse(testData[1]), id, int.Parse(testData[2])};
+                    Data = Element.Split(',');
+                    Data2Int = new int[4]{Data[0].ToInt(true), Data[1].ToInt(true), id, Data[2].ToInt(true)};
                 } catch(Exception e) {
                     Debug.LogError(e);
                     continue;
                 }
 
-                GameObject clone = GameManager.instance.pool.Get(0);
                 NoteInstScript cloneScript = clone.GetComponent<NoteInstScript>();
+                cloneScript.sendData(Data2Int);
 
-                string[] data = element.Split(',');
-
-                cloneScript.sendData(new int[4]{int.Parse(data[0]), int.Parse(data[1]), id, int.Parse(data[2])});
+                // print(Data2Int[0] + ", " + Data2Int[1] + ", " + id + ", " + Data2Int[2] + ", ");
 
                 id++;
-                stack++;
+                // stack++;
 
-                if(stack == 50) {
-                    stack = 0;
-                    yield return new WaitForSeconds(((float.Parse(data[1])*0.001f)-2)-audioS.time);
-                }
+                // if(stack == 50) {
+                //     stack = 0;
+                //     yield return new WaitForSeconds(((float.Parse(data[1])*0.001f)-2)-audioS.time);
+                // }
             }
         }
 

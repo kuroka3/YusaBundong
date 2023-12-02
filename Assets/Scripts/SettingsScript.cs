@@ -376,21 +376,29 @@ public static class SettingsManager {
 }
 
 public static class ObjectExtention {
-    public static int ToInt(this object o) {
+    public static int ToInt(this object o, bool ThrowException = false) {
         try {
             return int.Parse(o.ToString());
         } catch (Exception e) {
-            Debug.LogError(e);
-            return default;
+            if(ThrowException) {
+                throw e;
+            } else {
+                Debug.LogError(e);
+                return default;
+            }
         }
     }
 
-    public static float ToFloat(this object o) {
+    public static float ToFloat(this object o, bool ThrowException = false) {
         try {
             return float.Parse(o.ToString());
         } catch (Exception e) {
-            Debug.LogError(e);
-            return default;
+            if(ThrowException) {
+                throw e;
+            } else {
+                Debug.LogError(e);
+                return default;
+            }
         }
     }
 }

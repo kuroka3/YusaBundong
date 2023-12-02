@@ -8,11 +8,20 @@ public class PoolManager : MonoBehaviour
 
     List<GameObject>[] pools;
 
+    public int[] MaxObjects;
+
     void Awake() {
         pools = new List<GameObject>[prefabs.Length];
 
         for (int i = 0; i < pools.Length; i++) {
             pools[i] = new List<GameObject>();
+
+            for (int j = 0; j < MaxObjects[i]; j++) {
+                GameObject gameObject = Instantiate(prefabs[i], new Vector3(0f, 20f, -10f), Quaternion.identity, transform);
+                pools[i].Add(gameObject);
+            }
+
+            ReleaseAll(i);
         }
     }
 
@@ -28,11 +37,6 @@ public class PoolManager : MonoBehaviour
                 returnObj.SetActive(true);
                 break;
             }
-        }
-
-        if (!returnObj) {
-            returnObj = Instantiate(prefabs[index], new Vector3(0f, 20f, -10f), Quaternion.identity, transform);
-            pools[index].Add(returnObj);
         }
 
         return returnObj;

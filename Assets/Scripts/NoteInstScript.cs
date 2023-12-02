@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -17,14 +18,15 @@ public class NoteInstScript : MonoBehaviour
     private bool longJudging = false;
     
     void Update() {
+        if (!gameObject.activeSelf || id == -1) return;
+
         namsi = mytime - (NoteScript.time + GameManager.OffsetFloat);
 
-        MoveNote();
-        JudgeNote();
+        if (MoveNote()) JudgeNote();
     }
 
-    void MoveNote() {
-        if(GameManager.paused) return;
+    bool MoveNote() {
+        if(GameManager.paused) return false;
 
         if(namsi > -GameManager.judgement[3]) {
             transform.position = new Vector3(lineX, namsi * SettingsManager.hispeed - 7f);
@@ -34,17 +36,18 @@ public class NoteInstScript : MonoBehaviour
                 GameManager.priority[lineNum].Remove(id);
                 GameManager.instance.pool.Release(gameObject);
                 clear();
+                return false;
             }
         }
 
         if (removing) {
-                GameManager.priority[lineNum].Remove(id);
-                removing = false;
-                longJudging = false;
-                GameManager.instance.pool.Release(gameObject);
-                clear();
-                return;
-            }
+            GameManager.priority[lineNum].Remove(id);
+            removing = false;
+            longJudging = false;
+            GameManager.instance.pool.Release(gameObject);
+            clear();
+            return false;
+        }
 
         if (longJudging) {
             transform.position = new Vector3(lineX, -7f);
@@ -56,11 +59,11 @@ public class NoteInstScript : MonoBehaviour
                 transform.localScale = new Vector3(2f, GetLongnoteLength(length));
             }
         }
+
+        return true;
     }
 
     void JudgeNote() {
-        if (GameManager.paused) return;
-
         if (namsi <= GameManager.judgement[3]) {
             if(!GameManager.priority[lineNum].Contains(id)) {
                 GameManager.priority[lineNum].Add(id);
