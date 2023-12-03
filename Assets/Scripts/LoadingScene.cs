@@ -23,12 +23,19 @@ public class LoadingScene : MonoBehaviour
                 loadInfo("Downloading Charts...");
                 downloadDefaultSong();
             } else {
-                ProgressBar.value = 0.5f;
+                ProgressBar.value = 0.3333f;
 
                 loadInfo("Loading settings...");
                 SettingsManager.Load();
 
-                ProgressBar.value = 1.0f;
+                ProgressBar.value = 0.6666f;
+
+                loadInfo("Loading languages...");
+                LanguageScript.Load();
+
+                ProgressBar.value = 1f;
+
+                print(LanguageScript.lang["name"]);
                 SceneManager.LoadScene(2);
             }
         }

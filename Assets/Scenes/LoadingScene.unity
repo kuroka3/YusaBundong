@@ -368,8 +368,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: YusaBundong
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: f3674f2884e823946801dbfdc8ecbb48, type: 2}
-  m_sharedMaterial: {fileID: 3426190345783194053, guid: f3674f2884e823946801dbfdc8ecbb48, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c4d7c0b8dac6eb644a27c266c4a18215, type: 2}
+  m_sharedMaterial: {fileID: -644853603456417222, guid: c4d7c0b8dac6eb644a27c266c4a18215, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -549,8 +549,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Loading...
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: f3674f2884e823946801dbfdc8ecbb48, type: 2}
-  m_sharedMaterial: {fileID: 3426190345783194053, guid: f3674f2884e823946801dbfdc8ecbb48, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: c4d7c0b8dac6eb644a27c266c4a18215, type: 2}
+  m_sharedMaterial: {fileID: -644853603456417222, guid: c4d7c0b8dac6eb644a27c266c4a18215, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

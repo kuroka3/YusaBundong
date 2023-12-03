@@ -24,6 +24,8 @@ public class SettingsScript : MonoBehaviour
     void Start()
     {
         instance = this;
+
+        GeneralInit();
         GraphicInit();
         KeySettingsInit();
         AudioInit();
@@ -32,6 +34,32 @@ public class SettingsScript : MonoBehaviour
 
     void Update() {
         KeySettingsUpdate();
+    }
+
+    // ======================================= General Settings =======================================
+
+    void GeneralInit() {
+        LanguageInit();
+    }
+
+    // ================ Language ================
+
+    void LanguageInit() {
+        TextMeshProUGUI value = values[8];
+        value.text = LanguageScript.lang["name"];
+    }
+
+    public void LanguageChange(bool isUp) {
+        if (isUp) {
+            if (SettingsManager.lang != SettingsManager.langCodes.Length-1) SettingsManager.lang++;
+            else SettingsManager.lang = 0;
+        } else {
+            if (SettingsManager.lang != 0) SettingsManager.lang--;
+            else SettingsManager.lang = SettingsManager.langCodes.Length-1;
+        }
+
+        SettingsManager.Save();
+        SceneManager.LoadScene(5);
     }
 
     // ======================================= Graphic Settings =======================================
@@ -78,8 +106,8 @@ public class SettingsScript : MonoBehaviour
     void FullScreenInit() {
         TextMeshProUGUI value = values[1];
 
-        if(SettingsManager.fulls == FullScreenMode.ExclusiveFullScreen) value.text = "On";
-        else value.text = "Off";
+        if(SettingsManager.fulls == FullScreenMode.ExclusiveFullScreen) value.text = LanguageScript.lang["on"];
+        else value.text = LanguageScript.lang["off"];
     }
 
     public void FullScreenBtn() {
@@ -94,8 +122,8 @@ public class SettingsScript : MonoBehaviour
     void VSyncInit() {
         TextMeshProUGUI value = values[2];
 
-        if(SettingsManager.vsync) value.text = "On";
-        else value.text = "Off";
+        if(SettingsManager.vsync) value.text = LanguageScript.lang["on"];
+        else value.text = LanguageScript.lang["off"];
     }
 
     public void VSyncBtn() {
@@ -263,8 +291,8 @@ public class SettingsScript : MonoBehaviour
     void KeyBeamInit() {
         TextMeshProUGUI value = values[7];
 
-        if(SettingsManager.keybeamtoggle) value.text = "On";
-        else value.text = "Off";
+        if(SettingsManager.keybeamtoggle) value.text = LanguageScript.lang["on"];
+        else value.text = LanguageScript.lang["off"];
     }
 
     public void KeyBeamToggleBtn() {
@@ -294,6 +322,9 @@ public class SettingsScript : MonoBehaviour
 
 public static class SettingsManager {
     public static int[] targetFrames = new int[]{24, 30, 60, 120, 144, 240, 300, -1};
+    public static string[] langCodes = new string[]{"en-us", "ko-kr", "ja-jp", "zh-CN"};
+
+    public static int lang;
 
     public static FullScreenMode fulls;
     public static int resNum;
@@ -312,6 +343,8 @@ public static class SettingsManager {
     private static Dictionary<string, object> values = new();
 
     public static void ResetSettings() {
+        lang = 0;
+
         fulls = FullScreenMode.ExclusiveFullScreen;
         resNum = 0;
         vsync = false;
@@ -327,6 +360,8 @@ public static class SettingsManager {
     }
 
     public static void Save() {
+        values["lang"] = lang;
+
         values["fulls"] = fulls == FullScreenMode.ExclusiveFullScreen;
         values["resNum"] = resNum;
         values["vsync"] = vsync;
@@ -346,6 +381,8 @@ public static class SettingsManager {
         if (!File.Exists(settingsFile)) ResetSettings();
 
         values = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(settingsFile)) ?? new();
+
+        lang = (GetorNull("lang") ?? 0).ToInt();
 
         fulls = (bool) (GetorNull("fulls") ?? true) ? FullScreenMode.ExclusiveFullScreen : FullScreenMode.Windowed;
         resNum = (GetorNull("resNum") ?? 0).ToInt();
