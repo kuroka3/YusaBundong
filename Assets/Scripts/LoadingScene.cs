@@ -34,7 +34,9 @@ public class LoadingScene : MonoBehaviour
                 LanguageScript.Load();
 
                 ProgressBar.value = 1f;
-                SceneManager.LoadScene(2);
+
+                if (SceneAnimation.isDoing) SceneManager.LoadScene(2);
+                else SceneAnimation.LoadScene(2);
             }
         }
 

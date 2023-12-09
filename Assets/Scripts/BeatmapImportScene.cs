@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Windows.Forms;
 using Ookii.Dialogs;
 using TMPro;
@@ -21,7 +22,8 @@ public class BeatmapImportScene : MonoBehaviour
     private string SelectedPath = null;
     private string JacketPath = "null";
     
-    private List<TextMeshProUGUI> Difficulties = new();
+    private readonly List<TextMeshProUGUI> Difficulties = new();
+    private bool IsTempFolder = false;
 
     void Start() {
         afterSelect.SetActive(false);
@@ -38,6 +40,33 @@ public class BeatmapImportScene : MonoBehaviour
 
             afterSelect.SetActive(true);
             LoadValues();
+
+            IsTempFolder = false;
+        }
+    }
+
+    public void SelectOsz() {
+        VistaOpenFileDialog dialog = new() {
+            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\osu!",
+            Filter = ".osz file (*.osz)|*.osz",
+            FilterIndex = 0,
+            Title = "Select osz file"
+        };
+
+        if (dialog.ShowDialog() == DialogResult.OK) {
+            if (dialog.CheckFileExists) {
+                string osz = dialog.FileName;
+                string dir = GameManager.tmpFolder + "\\" + Guid.NewGuid().ToString();
+                ZipFile.ExtractToDirectory(osz, dir);
+
+                SelectedPath = dir;
+                SelectedBeatmap = new OsuBeatmap(dir);
+
+                afterSelect.SetActive(true);
+                LoadValues();
+
+                IsTempFolder = true;
+            }
         }
     }
 
@@ -96,6 +125,12 @@ public class BeatmapImportScene : MonoBehaviour
         File.Copy(string.Format("{0}\\{1}", SelectedPath, SelectedBeatmap.AudioPath), string.Format("{0}\\Songs\\{1}\\{2}", GameManager.appdata, SelectedBeatmap.BeatmapId, SelectedBeatmap.AudioPath));
         File.Copy(JacketPath, string.Format("{0}\\Songs\\{1}\\{2}", GameManager.appdata, SelectedBeatmap.BeatmapId, JacketPath.Split("\\")[^1]));
 
-        SceneManager.LoadScene(1);
+        if (IsTempFolder) Directory.Delete(SelectedPath, true);
+
+        SceneAnimation.LoadScene(1);
+    }
+
+    public void Exit() {
+        SceneAnimation.LoadScene(2);
     }
 }

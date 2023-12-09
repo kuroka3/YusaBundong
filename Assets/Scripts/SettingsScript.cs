@@ -359,12 +359,12 @@ public class SettingsScript : MonoBehaviour
 
     public void gotoHome() {
         SettingsManager.Save();
-        SceneManager.LoadScene(1);
+        SceneAnimation.LoadScene(1);
     }
 
     public void import() {
         SettingsManager.Save();
-        SceneManager.LoadScene(6);
+        SceneAnimation.LoadScene(6);
     }
 }
 

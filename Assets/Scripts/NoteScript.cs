@@ -6,8 +6,9 @@ using UnityEngine.SceneManagement;
 public class NoteScript : MonoBehaviour
 {
     public GameObject prefab;
+    public float AfterTime;
 
-    private AudioSource audioS;
+    public AudioSource audioS;
     private Coroutine syncTimeCour;
 
     public int LimitError;
@@ -31,15 +32,18 @@ public class NoteScript : MonoBehaviour
 
     private IEnumerator syncTime() {
         while(true) {
-            if(Math.Abs(audioS.time - time) >= LimitErrorFloat) {
-                time = audioS.time;
+            if (!GameManager.paused) {
+                if(Math.Abs(audioS.time - time) >= LimitErrorFloat) {
+                    time = audioS.time;
+                }
             }
+            
             yield return new WaitForSeconds(1f);
         }
     }
 
     private void startSong(int songid) {
-        time = -1f;
+        time = -AfterTime;
 
         audioS = gameObject.AddComponent<AudioSource>();
         audioS.clip = GameManager.Beatmaps[songid].audioClip;
@@ -48,7 +52,7 @@ public class NoteScript : MonoBehaviour
         string[] chart = GameManager.Beatmaps[songid].yusaBundongFiles[GameManager.DifficultyCode].chart;
 
         IEnumerator startAudio() {
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(AfterTime);
 
             audioS.Play();
             syncTimeCour = StartCoroutine(syncTime());
@@ -67,7 +71,7 @@ public class NoteScript : MonoBehaviour
 
             yield return new WaitForSeconds(endTime.ToFloat()*0.001f + 3f);
 
-            SceneManager.LoadScene(4);
+            SceneAnimation.LoadScene(4);
             StopCoroutine(syncTimeCour);
         }
 

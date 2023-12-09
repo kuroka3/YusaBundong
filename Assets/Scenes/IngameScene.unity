@@ -1340,7 +1340,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1714861693}
         m_TargetAssemblyTypeName: PauseScript, Assembly-CSharp
-        m_MethodName: unpause
+        m_MethodName: Continue
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2534,6 +2534,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 7690256787369352443, guid: db47152648f2ace41a88b22d2f49206c, type: 3}
+  AfterTime: 3
+  audioS: {fileID: 0}
   LimitError: 400
 --- !u!114 &1714861693
 MonoBehaviour:

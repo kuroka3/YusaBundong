@@ -42,6 +42,6 @@ public class ResultScript : MonoBehaviour
 
     public void end() {
         GameManager.clear(false);
-        SceneManager.LoadScene(2);
+        SceneAnimation.LoadScene(2);
     }
 }
