@@ -13,7 +13,7 @@ EditorBuildSettings:
     guid: 3eaa699ae330d0641862d3b349a22570
   - enabled: 1
     path: Assets/Scenes/SongListScene.unity
-    guid: 6597e3feced3bc445b1f4519c817b03a
+    guid: a1b2b5951085ff04cb44d5f25df0322e
   - enabled: 1
     path: Assets/Scenes/IngameScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
@@ -25,5 +25,11 @@ EditorBuildSettings:
     guid: 4af2ca246bcbe2046bca8a542a3a8345
   - enabled: 1
     path: Assets/Scenes/ConvertScene.unity
+    guid: d9dc42de8ca9af94db08bebb4412a556
+  - enabled: 0
+    path: Assets/Scenes/Old/OldConvertScene.unity
     guid: 1d80aa78d30d7264090b6a7b3ce1fbbc
+  - enabled: 0
+    path: Assets/Scenes/Old/OldSongListScene.unity
+    guid: 6597e3feced3bc445b1f4519c817b03a
   m_configObjects: {}

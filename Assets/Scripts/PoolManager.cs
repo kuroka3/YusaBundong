@@ -11,6 +11,8 @@ public class PoolManager : MonoBehaviour
     public int[] MaxObjects;
 
     void Awake() {
+        MaxObjects[0] = SettingsManager.GetAsInt(Settings.MaxObject);
+
         pools = new List<GameObject>[prefabs.Length];
 
         for (int i = 0; i < pools.Length; i++) {
@@ -32,7 +34,7 @@ public class PoolManager : MonoBehaviour
             if (!obj.activeSelf) {
                 returnObj = obj;
                 returnObj.transform.position = new Vector3(0f, 20f, -10f);
-                returnObj.transform.localScale = new Vector3(2f, 0.5f);
+                returnObj.transform.localScale = new Vector3(2f, 0.7f);
                 
                 returnObj.SetActive(true);
                 break;

@@ -17,9 +17,9 @@ public class LoadingScene : MonoBehaviour
         IEnumerator Init() {
             yield return new AsyncOperation();
             loadInfo("Loading charts...");
-            ErrorDisplayer.ClearLog();
+            // ErrorDisplayer.ClearLog();
 
-            if(!GameManager.loadCharts()) {
+            if(!GameManager.LoadBeatmaps()) {
                 loadInfo("Downloading Charts...");
                 downloadDefaultSong();
             } else {
@@ -34,8 +34,6 @@ public class LoadingScene : MonoBehaviour
                 LanguageScript.Load();
 
                 ProgressBar.value = 1f;
-
-                print(LanguageScript.lang["name"]);
                 SceneManager.LoadScene(2);
             }
         }
@@ -86,6 +84,24 @@ public class LoadingScene : MonoBehaviour
 
     private void Reload() {
         Awake();
+    }
+
+    public static Sprite LoadJacket(string path) {
+        try {
+            Texture2D texture = null;
+            byte[] fileData;
+
+            if (File.Exists(path))
+            {
+                fileData = File.ReadAllBytes(path);
+                texture = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+                texture.LoadImage(fileData);
+            }
+            return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));;
+        } catch(Exception e) {
+            Debug.LogError(e);
+            return null;
+        }
     }
 }
 

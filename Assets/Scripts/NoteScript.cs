@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -43,8 +42,10 @@ public class NoteScript : MonoBehaviour
         time = -1f;
 
         audioS = gameObject.AddComponent<AudioSource>();
-        audioS.clip = GameManager.songs[songid];
-        audioS.volume = SettingsManager.volume.ToFloat()*0.01f;
+        audioS.clip = GameManager.Beatmaps[songid].audioClip;
+        audioS.volume = SettingsManager.GetAsInt(Settings.Volume).ToFloat()*0.01f;
+
+        string[] chart = GameManager.Beatmaps[songid].yusaBundongFiles[GameManager.DifficultyCode].chart;
 
         IEnumerator startAudio() {
             yield return new WaitForSeconds(1);
@@ -52,7 +53,19 @@ public class NoteScript : MonoBehaviour
             audioS.Play();
             syncTimeCour = StartCoroutine(syncTime());
 
-            yield return new WaitForSeconds(float.Parse(GameManager.datas[songid][3])*0.001f + 3f);
+            int endTime = 0;
+
+            for (int i = chart.Length-1; i>=0; i--) {
+                if (!string.IsNullOrEmpty(chart[i])) {
+                    string[] lastLineData = chart[i].Split(",");
+
+                    if(lastLineData[2].Equals("-1")) endTime = int.Parse(lastLineData[1]);
+                    else endTime = int.Parse(lastLineData[2]); 
+                    break;
+                }
+            }
+
+            yield return new WaitForSeconds(endTime.ToFloat()*0.001f + 3f);
 
             SceneManager.LoadScene(4);
             StopCoroutine(syncTimeCour);
@@ -62,9 +75,8 @@ public class NoteScript : MonoBehaviour
             yield return new AsyncOperation();
 
             int id = 0;
-            // int stack = 0;
 
-            for (int i = 0; i<GameManager.charts[songid].Length; i++) {
+            for (int i = 0; i<chart.Length; i++) {
                 GameObject clone;
 
                 while (true) {
@@ -77,7 +89,7 @@ public class NoteScript : MonoBehaviour
                     }
                 }
 
-                string Element = GameManager.charts[songid][i];
+                string Element = chart[i];
                 string[] Data;
                 int[] Data2Int;
                 try {
@@ -91,15 +103,7 @@ public class NoteScript : MonoBehaviour
                 NoteInstScript cloneScript = clone.GetComponent<NoteInstScript>();
                 cloneScript.sendData(Data2Int);
 
-                // print(Data2Int[0] + ", " + Data2Int[1] + ", " + id + ", " + Data2Int[2] + ", ");
-
                 id++;
-                // stack++;
-
-                // if(stack == 50) {
-                //     stack = 0;
-                //     yield return new WaitForSeconds(((float.Parse(data[1])*0.001f)-2)-audioS.time);
-                // }
             }
         }
 

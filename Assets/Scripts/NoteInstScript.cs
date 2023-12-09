@@ -1,9 +1,10 @@
-using System;
-using System.Collections;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class NoteInstScript : MonoBehaviour
 {
+
+    private SpriteRenderer rend = null;
 
     private int[] data;
     private int lineNum = -1;
@@ -17,6 +18,10 @@ public class NoteInstScript : MonoBehaviour
     private bool removing = false;
     private bool longJudging = false;
     
+    void Awake() {
+        if (rend == null) rend = GetComponent<SpriteRenderer>();
+    }
+
     void Update() {
         if (!gameObject.activeSelf || id == -1) return;
 
@@ -29,7 +34,7 @@ public class NoteInstScript : MonoBehaviour
         if(GameManager.paused) return false;
 
         if(namsi > -GameManager.judgement[3]) {
-            transform.position = new Vector3(lineX, namsi * SettingsManager.hispeed - 7f);
+            transform.position = new Vector3(lineX, namsi * SettingsManager.GetAsFloat(Settings.HiSpeed) - 7f);
         } else {
             if(longJudging == false) {
                 JudgementScript.judge(namsi);
@@ -69,7 +74,7 @@ public class NoteInstScript : MonoBehaviour
                 GameManager.priority[lineNum].Add(id);
             }
 
-            if(Input.GetKeyDown(SettingsManager.keys[lineNum]) && GameManager.priority[lineNum][0] == id) {
+            if(Input.GetKeyDown(JsonConvert.DeserializeObject<KeyCode[]>(SettingsManager.Get<object>(Settings.Keys).ToString())[lineNum]) && GameManager.priority[lineNum][0] == id) {
                 JudgementScript.judge(namsi);
                 if (length == -1) removing = true; else longJudging = true;
             }
@@ -77,7 +82,7 @@ public class NoteInstScript : MonoBehaviour
             if (longJudging) {
                 float namsi2 = endTime - (NoteScript.time + GameManager.OffsetFloat);
 
-                if (Input.GetKeyUp(SettingsManager.keys[lineNum])) {
+                if (Input.GetKeyUp(JsonConvert.DeserializeObject<KeyCode[]>(SettingsManager.Get<object>(Settings.Keys).ToString())[lineNum])) {
                     JudgementScript.judge(namsi2);
                     removing = true;
                 } else {
@@ -126,6 +131,10 @@ public class NoteInstScript : MonoBehaviour
 
             transform.localScale = new Vector3(2f, GetLongnoteLength(length));
         }
+
+        if (lineNum == 1 || lineNum == 2) {
+            rend.color = new Color(0f, 0.7f, 9f, 1f);
+        }
     }
 
     public void clear() {
@@ -139,9 +148,11 @@ public class NoteInstScript : MonoBehaviour
 
         removing = false;
         longJudging = false;
+
+        rend.color = Color.white;
     }
 
     private float GetLongnoteLength(float length) {
-        return length * SettingsManager.hispeed;
+        return length * SettingsManager.GetAsFloat(Settings.HiSpeed);
     }
 }
