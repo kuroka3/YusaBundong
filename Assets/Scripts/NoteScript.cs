@@ -69,7 +69,11 @@ public class NoteScript : MonoBehaviour
                 }
             }
 
-            yield return new WaitForSeconds(endTime.ToFloat()*0.001f + 3f);
+            float WaitTime = endTime.ToFloat()*0.001f+3f;
+
+            while (time < WaitTime) {
+                yield return new WaitForSeconds(0.1f);
+            }
 
             SceneAnimation.LoadScene(4);
             StopCoroutine(syncTimeCour);
