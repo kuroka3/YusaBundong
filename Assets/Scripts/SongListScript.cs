@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Animation;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -16,12 +17,17 @@ public class SongListScript : MonoBehaviour
 
     private List<SongListElementScript> Elements = new();
     private ScrollRect scrollRect;
+    private float[] Positions;
+    private float Space;
+
+    private Coroutine ListMovingCoroutine = null;
 
     public static SongListScript instance;
 
     void Start() {
         instance = this;
         scrollRect = scrollView.GetComponent<ScrollRect>();
+        Positions = new float[GameManager.Beatmaps.Length];
 
         for (int i = 0; i < GameManager.Beatmaps.Length; i++) {
             YusaBundongBeatmap beatmap = GameManager.Beatmaps[i];
@@ -42,7 +48,85 @@ public class SongListScript : MonoBehaviour
             }
         }
 
+        Space = 1.0f/(Elements.ToArray().Length-1).ToFloat();
+        movementThreshold = Space/100f;
+
+        for (int i = 0; i < Positions.Length; i++) {
+            Positions[i] = 1 - (Space*i.ToFloat());
+        }
+
+        scrollRect.verticalNormalizedPosition = Positions[GameManager.songCode];
         RefreshData();
+    }
+
+    private float lastScrollPos;
+    private float movementThreshold;
+    private bool isMoving = false;
+    private bool isAnimationing = false;
+
+    void FixedUpdate() {
+        Select(FindClosestIndex(scrollRect.verticalNormalizedPosition, Positions), false);
+
+        if (Mathf.Abs(scrollRect.verticalNormalizedPosition - lastScrollPos) > movementThreshold) {
+            lastScrollPos = scrollRect.verticalNormalizedPosition;
+            isMoving = true;
+        } else {
+            if (isMoving == true && !Input.GetKey(KeyCode.Mouse0) && !isAnimationing) {
+                isMoving = false;
+                Select(FindClosestIndex(scrollRect.verticalNormalizedPosition, Positions));
+            }
+        }
+    }
+
+    private int FindClosestIndex(float target, float[] values) {
+        float minDifference = Mathf.Abs(values[0] - target);
+        int closestIndex = 0;
+
+        for(int i = 1; i < values.Length; i++) {
+            float difference = Mathf.Abs(values[i] - target);
+            if(difference < minDifference) {
+                minDifference = difference;
+                closestIndex = i;
+            }
+        }
+
+        return closestIndex;
+    }
+
+    public void Select(int code, bool ScrollTo = true) {
+        if (code == GameManager.songCode) return;
+
+        if (ScrollTo) {
+            if (isAnimationing) StopCoroutine(ListMovingCoroutine);
+            ListMovingCoroutine = StartCoroutine(ToMoveList(code));
+        } else {
+            GameManager.songCode = code;
+            GameManager.DifficultyCode = 0;
+        }
+
+        RefreshData();
+    }
+
+    private IEnumerator ToMoveList(int code) {
+        isAnimationing = true;
+
+        float Current = 0f;
+        float Duration = 0.5f;
+
+        float Start = scrollRect.verticalNormalizedPosition;
+        float Target = Positions[code];
+
+        while (true) {
+            Current += Time.deltaTime;
+            float t = EaseUtil.Ease(Current, Duration, Ease.OUT_CUBIC);
+            scrollRect.verticalNormalizedPosition = Mathf.Lerp(Start, Target, t);
+
+            if (Current >= Duration) break;
+
+            yield return null;
+        }
+        
+        isAnimationing = false;
     }
 
     private RectTransform rect;
@@ -221,15 +305,6 @@ public class SongListScript : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Space)) {
             StartGame();
         }
-    }
-
-    public void Select(int code) {
-        GameManager.songCode = code;
-        GameManager.DifficultyCode = 0;
-
-        scrollRect.verticalNormalizedPosition = 1 - GameManager.songCode.ToFloat()/(Elements.ToArray().Length-1).ToFloat();
-
-        RefreshData();
     }
 
     private IEnumerator DestorySelf() {
